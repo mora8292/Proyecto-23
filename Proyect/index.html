@@ -1,0 +1,138 @@
+<html>
+    <head>
+        <meta charset="utf-8" http-equiv="Content-Type">
+            <meta content="width=device-width, initial-scale=1" name="viewport">
+                <link href="css/bootstrap.min.css" rel="stylesheet">
+                    <link href="estilos.css" rel="stylesheet">
+                        <title>
+                            LOGIN
+                        </title>
+                    </link>
+                </link>
+            </meta>
+        </meta>
+    </head>
+    <body>
+        <script src="js/entrar.js">
+        </script>
+        <section class="vh-100">
+            <div class="container-fluid ">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-md-9 col-lg-6 col-xl-5">
+                        <img alt="Sample image" class="img-fluid" src="imagenes/itesa.png">
+                        </img>
+                    </div>
+                    <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                        <form>
+                            <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                                <p class="lead fw-normal mb-0 me-3">
+                                    Iniciar sesión con
+                                </p>
+                                <button class="btn btn-primary btn-floating mx-1" type="button">
+                                    <i class="fab fa-google-plus" src="imagenes/itesa.png">
+                                    </i>
+                                </button>
+                            </div>
+                            <div class="divider d-flex align-items-center ">
+                                <p class="text-center fw-bold mx-3 mb-0">
+                                    O
+                                </p>
+                            </div>
+                            <div>
+                                <br>
+                                </br>
+                            </div>
+                            <!-- User input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label">
+                                    Usuario:
+                                </label>
+                                <input class="form-control form-control-lg" id="txtUsuario" placeholder="20030091" required="" style="text-align: center;" type="email"/>
+                            </div>
+                            <!-- Password input -->
+                            <div class="form-outline mb-3">
+                                <label class="form-label">
+                                    Contraseña:
+                                </label>
+                                <input class="form-control form-control-lg" id="txtPass" placeholder="********" required="" style="text-align: center;" type="password"/>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <!-- Checkbox -->
+                                <div class="form-check mb-0">
+                                    <label class="form-check-label" for="form2Example3">
+                                        ¿Olvidaste tu contraseña?
+                                    </label>
+                                </div>
+                                <a class="text-body" href="recuperar.html">
+                                    Recuperar contraseña
+                                </a>
+                            </div>
+                            <div class="text-center text-lg-start mt-4 pt-2">
+                                <button class="btn btn-primary btn-lg btn_login" onclick="ingresar()" style="padding-left: 2.5rem; padding-right: 2.5rem;" type="button">
+                                    <img class=" img-fluid" height="20px" src="imagenes/inlog.png" width="20px">
+                                    </img>
+                                    Ingresar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer style="width:100%; margin-left: 0px;">
+            <div class="copyright" style="background-color: black;">
+                <div class="container-fluid" style="background-color: black; color: #bbdefb;">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-4" style="text-align:center;">
+                            <b>
+                                <br>
+                                    Página Oficial: itesa.edu.mx
+                                </br>
+                            </b>
+                        </div>
+                        <div class="col-lg-4 col-sm-4" style="text-align:center;">
+                            <b>
+                                <br>
+                                    Teléfono: 01 748-912-4450
+                                </br>
+                            </b>
+                        </div>
+                        <div class="col-lg-4 col-sm-4">
+                            <center>
+                                <img alt="Sample " class="img-fluid" id="img-pie" src="imagenes/hidalgo.png"/>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -------------------------------
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" role="dialog" tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                Modal title
+                            </h5>
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                <span aria-hidden="true">
+                                    ×
+                                </span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">
+                                Close
+                            </button>
+                            <button class="btn btn-primary" type="button">
+                                Save changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,215 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+            <link href="css/bootstrap.min.css" rel="stylesheet">
+                <link href="estilos.css" rel="stylesheet">
+                    <title>
+                        EVENTOS
+                    </title>
+                </link>
+            </link>
+        </meta>
+    </head>
+    <body>
+        <div class="container-longer">
+            <div class="row">
+                <div class="col-lg-3 col-sm-3 imagen">
+                    <img class="img img-fluid" height="60px" src="imagenes/itesa.png" width="150px">
+                    </img>
+                </div>
+                <div class="col-lg-6 col-sm-6 sup">
+                    <p style="text-align: center; margin-top: 30px; color: white;">
+                        INSTITUTO TECNOLÓGICO SUPERIOR DEL ORIENTE DEL ESTADO DE HIDALGO
+                    </p>
+                </div>
+                <div class="col-lg-3 col-sm-3 imagen">
+                    <img class="img img-fluid" height="60px" src="imagenes/tec.png" width="150px">
+                    </img>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-sm-12" style="height: 40px;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 textlogin" style="text-align:left;">
+                            <h3>
+                                Selecciona evento:
+                            </h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2">
+                            </div>
+                            <div class="col-lg-8 col-sm-8" style="text-align:center;">
+                                <select id="Eventos" onchange="cargar(this)" style="width: 150px; height: 30px; text-align: center;">
+                                    <option>
+                                        Evento1
+                                    </option>
+                                    <option>
+                                        Evento2
+                                    </option>
+                                    <option>
+                                        Evento3
+                                    </option>
+                                    <option>
+                                        Evento4
+                                    </option>
+                                    <option>
+                                        Evento5
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-6 tabla_eventos">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 textlogin">
+                            <h3>
+                                Información del evento:
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 textlogin" style="height: 20px;">
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Nombre
+                                </th>
+                                <th scope="col">
+                                    Fecha y hora
+                                </th>
+                                <th scope="col">
+                                    Lugar
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalles">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 textlogin">
+                            <button class="btn_eventos btn-primary me-md-2 btn" id="generaQR" type="button">
+                                Generar QR
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 textlogin" style="height: 30px;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 textlogin">
+                            <center>
+                                <div class="qr">
+                                </div>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <footer style="width:100%; margin-left: 0px;">
+        <div class="copyright" style="background-color: black;">
+            <div class="container-fluid" style="background-color: black; color: #bbdefb;">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-4" style="text-align:center;">
+                        <b>
+                            <br>
+                                Página Oficial: itesa.edu.mx
+                            </br>
+                        </b>
+                    </div>
+                    <div class="col-lg-4 col-sm-4" style="text-align:center;">
+                        <b>
+                            <br>
+                                Teléfono: 01 748-912-4450
+                            </br>
+                        </b>
+                    </div>
+                    <div class="col-lg-4 col-sm-4">
+                        <center>
+                            <img alt="Sample " class="img-fluid" id="img-pie" src="imagenes/hidalgo.png"/>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="js/jquery.js">
+    </script>
+    <script src="js/qr.js">
+    </script>
+    <script type="text/javascript">
+        const   qrfinal = document.querySelector('.qr'), 
+        //user_input = document.getElementById('txtUsuario'),
+        evento=document.getElementById('Eventos');
+    
+    function cargar(select){
+        
+        var n1=evento.value;
+        var n2="Auditorio";
+        var n3="20-04-2023_10:00am";
+
+        history.pushState({},'',"eventos_Estudiantes.html?n1="+n1+"&n2="+n2+"&n3="+n3);
+            $.post("tabla.html",function(res){
+                $("#detalles").html(res);
+            });
+            
+        };
+
+        $("#generaQR").click(function(){
+            
+            if(evento.value != ""){
+        if(qrfinal.childElementCount == 0){
+          genera(evento);  
+        } else { 
+          qrfinal.innerHTML = "";          
+          genera(evento);
+        }
+      } else{
+        qrfinal.style = "display none";
+      }
+            function genera(){
+                var qrcode = new QRCode(qrfinal, {
+                text: `${evento.value} % `,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+                });
+            };
+        });
+    </script>
+    <style type="text/css">
+        html {
+  min-height: 100%;
+  position: relative;
+}
+body {
+  margin: 0;
+  margin-bottom: 200px;
+}
+footer {
+  background-color: black;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: white;
+}
+    </style>
+</html>

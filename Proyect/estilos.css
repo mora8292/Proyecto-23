@@ -1,0 +1,109 @@
+.imagen
+{
+	background-color:#d6d6d6;
+	height:80px; 
+	text-align: center;
+}
+
+.img
+{
+	margin-top: 10px;
+}
+
+.sup
+{
+	background-color:#d6d6d6; 
+	height:80px;
+
+}
+
+.imglogin
+{
+	text-align: center;
+	height:170px;
+}
+
+.textlogin
+{
+	text-align: center;
+}
+
+.btn_login
+{
+	background-color: rgb(0, 119, 112);
+	font-size: 20px;
+
+}
+.btn-g
+{
+	background-color: transparent;
+
+}
+
+.btn_eventos
+{
+	background-color: rgb(0, 119, 112);
+	font-size: 20px;
+
+}
+
+.btn_coordinador
+{
+	background-color: transparent;
+	font-size: 20px;
+	color:black;
+	width: 300px;
+	height: 150px;
+
+}
+
+.btn_eventos_D
+{
+	background-color: rgb(0, 119, 112);
+	font-size: 150%;
+
+}
+
+.login
+{
+border-width:2px;
+border-style: solid;
+border-color:black;
+}
+
+.tabla_eventos
+{
+border-width:2px;
+border-style: solid;
+border-color:black;
+}
+
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+.h-custom {
+height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+.h-custom {
+height: 100%;
+}
+}
+
+#pie
+{
+	background-color: black;
+}
+
+#img-pie
+{
+	height:80px; 
+	width: 80px;
+}
+
+-------------------------
+		
