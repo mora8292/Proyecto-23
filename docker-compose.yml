@@ -5,8 +5,10 @@ services:
     container_name: php_web
     ports:
       - "8080:80"
+      - "8443:443"
     volumes:
       - .:/var/www/html
+      - ./ssl:/etc/apache2/ssl
     depends_on:
       - mysql
 

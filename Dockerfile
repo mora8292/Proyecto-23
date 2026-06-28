@@ -22,4 +22,13 @@ RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 # Exponer el puerto 80 para el servidor Apache
 EXPOSE 80 
+EXPOSE 443
 
+RUN a2enmod ssl
+RUN a2ensite default-ssl
+
+# Copiar configuración SSL personalizada
+COPY apache/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+
+# Crear carpeta para certificados
+RUN mkdir -p /etc/apache2/ssl
