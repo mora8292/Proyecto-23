@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MIS EVENTOS</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="estilos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
+
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
     <script src="js/multiselect-dropdown.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
+
     <!-- Toastr para notificaciones -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
     <style>
         body {
             margin: 0;
@@ -26,15 +27,15 @@
             position: relative;
             min-height: 100vh;
         }
-        
+
         .container-longer {
             padding: 20px 0;
         }
-        
+
         .tabla_eventos {
             margin: 30px 0;
         }
-        
+
         footer {
             background-color: #000;
             color: white;
@@ -44,17 +45,17 @@
             width: 100%;
             border-top: none !important;
         }
-        
+
         .modal-content {
             border-radius: 0;
         }
-        
+
         .btn_login {
             background-color: #337ab7;
             color: white;
             margin: 20px 0;
         }
-        
+
         #notification-area {
             position: fixed;
             top: 20px;
@@ -62,13 +63,14 @@
             width: 300px;
             z-index: 9999;
         }
-        
+
         .btn-action {
             margin: 0 5px;
         }
     </style>
 
 </head>
+
 <body>
     <!-- Área de notificaciones -->
     <div id="notification-area"></div>
@@ -97,7 +99,17 @@
             <div class="row">
                 <div class="col-lg-12 col-sm-12 tabla_eventos">
                     <h3 class="text-center">Información del evento:</h3>
-                    
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="verTodos">
+                                <label class="form-check-label" for="verTodos">
+                                            Ver todos los eventos
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <table class="table table-bordered" id="Eventos">
                         <thead class="thead-dark">
                             <tr>
@@ -139,17 +151,17 @@
                 <form id="form-modificar">
                     <div class="modal-body">
                         <input type="hidden" name="id_evento" id="id_evento">
-                        
+
                         <div class="form-group">
                             <label for="evento">Nombre del Evento</label>
                             <input type="text" class="form-control" id="evento" name="evento" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="fechayhora">Fecha y Hora</label>
                             <input type="datetime-local" class="form-control" id="fechayhora" name="fechayhora" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="lugar">Lugar</label>
                             <select class="form-control" id="lugar" name="lugar" required>
@@ -159,9 +171,9 @@
                                 <option value="Otro">Otro</option>
                             </select>
                         </div>
-                        
+
                         <div class="form-group" id="lugares"></div>
-                        
+
                         <div class="form-group">
                             <label for="carreras">Carreras Asistentes</label>
                             <select class="form-control" id="carreras" name="carrera" style="width:270px">
@@ -249,6 +261,10 @@
             // Cargar eventos al iniciar
             cargarEventos();
 
+            $("#verTodos").change(function() {
+                cargarEventos();
+            });
+
             // Manejar cambio en el select de lugar
             $("#lugar").change(function() {
                 if ($(this).val() == "Otro") {
@@ -272,9 +288,13 @@
         });
 
         function cargarEventos() {
+
             $.ajax({
                 url: 'loadcor.php',
-                type: 'GET',
+                type: 'POST',
+                data: {
+                    verTodos: $("#verTodos").is(":checked") ? 1 : 0
+                },
                 dataType: 'json',
                 success: function(data) {
                     $('#content').html(data);
@@ -283,6 +303,7 @@
                     toastr.error('Error al cargar los eventos');
                 }
             });
+
         }
 
         // Función para llenar datos en el modal de modificación
@@ -291,14 +312,14 @@
             $('#evento').val(nombre);
             $('#fechayhora').val(formatDateTimeForInput(fecha));
             $('#lugar').val(lugar);
-            
+
             // Mostrar campo adicional si el lugar es "Otro"
             if (lugar === "Otro") {
                 $("#lugares").html('<input type="text" class="form-control" name="lugar_otro" placeholder="Especifica el lugar" required>');
             } else {
                 $("#lugares").empty();
             }
-            
+
             $('#modificar').modal('show');
         }
 
@@ -308,43 +329,55 @@
             $('#nombre-evento').text(nombre);
             $('#fecha-evento').text(fecha);
             $('#lugar-evento').text(lugar);
-            
+
             $('#eliminar').modal('show');
         }
 
         function modificarEvento() {
-            var formData = $('#form-modificar').serialize();
-            
-            $.ajax({
-                url: 'edit.php',
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function(response) {
-                    if(response.success) {
-                        toastr.success(response.message);
-                        $('#modificar').modal('hide');
-                        cargarEventos();
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function() {
-                    toastr.error('Error al conectar con el servidor');
-                }
-            });
+
+    var formData = $('#form-modificar').serialize();
+
+    $.ajax({
+        url: 'edit.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+
+        success: function(response) {
+            console.log(response);
+
+            if (response.success) {
+                toastr.success(response.message);
+                $('#modificar').modal('hide');
+                cargarEventos();
+            } else {
+                toastr.error(response.message);
+            }
+        },
+
+        error: function(xhr, status, error) {
+            console.log("Status:", status);
+            console.log("Error:", error);
+            console.log("Respuesta:");
+            console.log(xhr.responseText);
+
+            toastr.error("Error al conectar con el servidor");
         }
+    });
+}
 
         function eliminarEvento() {
             var id = $('#delete_Nombre_Evento').val();
-            
+
             $.ajax({
                 url: 'eliminar.php',
                 type: 'POST',
-                data: {id: id},
+                data: {
+                    id: id
+                },
                 dataType: 'json',
                 success: function(response) {
-                    if(response.success) {
+                    if (response.success) {
                         toastr.success(response.message);
                         $('#eliminar').modal('hide');
                         cargarEventos();
@@ -375,7 +408,7 @@
             var nombre = fila.find('td:eq(0)').text();
             var fecha = fila.find('td:eq(1)').text();
             var lugar = fila.find('td:eq(2)').text();
-            
+
             llenarModalModificar(id, nombre, fecha, lugar);
         });
 
@@ -385,9 +418,10 @@
             var nombre = fila.find('td:eq(0)').text();
             var fecha = fila.find('td:eq(1)').text();
             var lugar = fila.find('td:eq(2)').text();
-            
+
             llenarModalEliminar(id, nombre, fecha, lugar);
         });
     </script>
 </body>
+
 </html>
