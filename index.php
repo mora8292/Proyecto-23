@@ -186,7 +186,10 @@ if ( $gClient->getAccessToken() ) { //SE HA LOGUEADO
                                 <label class="form-label">
                                     Usuario:
                                 </label>
-                                <input class="form-control form-control-lg" id="txtUsuario" placeholder="Ingresa Datos" required="" style="text-align: center;" type="email"/>
+                                <input class="form-control form-control-lg" id="txtUsuario" inputmode="numeric" placeholder="Ingresa tu numero de trabajador o matricula" required="" style="text-align: center;" type="text"/>
+                                <div class="invalid-feedback text-start">
+                                    Debes usar tu numero de trabajador siendo coordinador.
+                                </div>
                             </div>
                             <!-- Password input -->
                             <div class="form-outline mb-3">
@@ -253,12 +256,21 @@ if ( $gClient->getAccessToken() ) { //SE HA LOGUEADO
 
         <script src="js/jquery.js"> </script>
         <script type="text/javascript">
+            $("#txtUsuario").on("input", function(){
+                $(this).removeClass("is-invalid");
+            });
+
             $("#entrar").click(function(){
-            let nombre = $("#txtUsuario").val();
+            let nombre = $("#txtUsuario").val().trim();
             let contraseña = $("#txtPass").val();
+            let esCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nombre);
                 
             if (nombre=="") {
+                $("#txtUsuario").removeClass("is-invalid");
                 alertify.error("Falta el nombre");
+            }
+            else if (esCorreo) {
+                $("#txtUsuario").addClass("is-invalid").focus();
             }
             else if (contraseña=="") {
                 alertify.error("Falta la contraseña");
