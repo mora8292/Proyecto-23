@@ -97,44 +97,71 @@
         <div class="container">
             <!-- Tabla de eventos -->
             <div class="row">
-                <div class="col-lg-12 col-sm-12 tabla_eventos">
-                    <h3 class="text-center">Información del evento:</h3>
-                    <div class="row mb-3">
-                        <div class="col-lg-12">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="verTodos">
-                                <label class="form-check-label" for="verTodos">
-                                            Ver todos los eventos
-                                </label>
+                <div class="row" style="margin-bottom:20px;">
+                    <div class="col-lg-12">
+
+                        <div class="panel panel-default" style="margin-bottom:0;">
+                            <div class="panel-body">
+
+                                <div class="row">
+
+                                    <div class="col-md-8 col-sm-8">
+                                        <h4 style="margin:0; font-weight:bold;">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                            Información del evento
+                                        </h4>
+
+                                        <small style="color:#777;">
+                                            Selecciona si deseas visualizar todos los eventos registrados.
+                                        </small>
+                                    </div>
+
+                                    <div class="col-md-4 col-sm-4 text-right">
+
+                                        <label class="switch">
+                                            <input type="checkbox" id="verTodos">
+                                            <span class="slider round"></span>
+                                        </label>
+
+                                        <span style="margin-left:10px;font-weight:bold;">
+                                            Ver todos
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
-
-                    <table class="table table-bordered" id="Eventos">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Fecha y hora</th>
-                                <th>Lugar</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="content">
-                            <!-- Contenido dinámico -->
-                        </tbody>
-                    </table>
                 </div>
-            </div>
 
-            <!-- Botón de regresar -->
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <button class="btn btn-lg btn_login" onclick="pagcor()">
-                        <img src="imagenes/regresa.png" style="height: 30px; width: 25px; vertical-align: middle;">
-                        Regresar
-                    </button>
-                </div>
+                <table class="table table-bordered" id="Eventos">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha y hora</th>
+                            <th>Lugar</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="content">
+                        <!-- Contenido dinámico -->
+                    </tbody>
+                </table>
             </div>
+        </div>
+
+        <!-- Botón de regresar -->
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <button class="btn btn-lg btn_login" onclick="pagcor()">
+                    <img src="imagenes/regresa.png" style="height: 30px; width: 25px; vertical-align: middle;">
+                    Regresar
+                </button>
+            </div>
+        </div>
         </div>
     </section>
 
@@ -335,36 +362,36 @@
 
         function modificarEvento() {
 
-    var formData = $('#form-modificar').serialize();
+            var formData = $('#form-modificar').serialize();
 
-    $.ajax({
-        url: 'edit.php',
-        type: 'POST',
-        data: formData,
-        dataType: 'json',
+            $.ajax({
+                url: 'edit.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
 
-        success: function(response) {
-            console.log(response);
+                success: function(response) {
+                    console.log(response);
 
-            if (response.success) {
-                toastr.success(response.message);
-                $('#modificar').modal('hide');
-                cargarEventos();
-            } else {
-                toastr.error(response.message);
-            }
-        },
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#modificar').modal('hide');
+                        cargarEventos();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
 
-        error: function(xhr, status, error) {
-            console.log("Status:", status);
-            console.log("Error:", error);
-            console.log("Respuesta:");
-            console.log(xhr.responseText);
+                error: function(xhr, status, error) {
+                    console.log("Status:", status);
+                    console.log("Error:", error);
+                    console.log("Respuesta:");
+                    console.log(xhr.responseText);
 
-            toastr.error("Error al conectar con el servidor");
+                    toastr.error("Error al conectar con el servidor");
+                }
+            });
         }
-    });
-}
 
         function eliminarEvento() {
             var id = $('#delete_Nombre_Evento').val();
