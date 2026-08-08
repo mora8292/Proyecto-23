@@ -1,87 +1,86 @@
 <?php
 require("conexion.php");
-//$conexion = mysqli_connect('localhost','root','','itesa');
 
-$usuario=$_POST['nombre'];
-//consultar matricula de estudiantes
+$usuario = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+$passwordIngresada = '';
 
-
-	if (!isset($usuario)) { /*para saber si una variable de sesion esta definida*/
-		header("Location:index.php");
-	}
-    
-    if (strlen($usuario)==5) {
-    	//	echo"holaaa";
-    	//consultar clave de Docentes
-	$Dinicio = "SELECT count(clave) as clave FROM docentes where clave=".$usuario;
-    $ejecutadoD = $mysqli->query($Dinicio);
-    $clave_docentes=mysqli_fetch_array($ejecutadoD);
-    
-    if ($clave_docentes["clave"]==1){
-
-    $Dinicio = "SELECT clave FROM docentes where clave=".$usuario;
-    $ejecutadoD = $mysqli->query($Dinicio);
-    $clave_docentes=mysqli_fetch_array($ejecutadoD);
-
-    $Dcontra = "SELECT contrasena FROM docentes where clave=".$usuario;
-    $ejecutadoDContra = $mysqli->query($Dcontra);
-    $clave_docentesContra=mysqli_fetch_array($ejecutadoDContra);
-
-    	$contraseña= $clave_docentesContra['contrasena'];
-
-    $claveD=$clave_docentes['clave'];
-    if( $usuario==$claveD && $_POST["contraseña"]==$contraseña){
-		session_start();
-
-		$_SESSION["usuario"]["clave_D"]=$claveD;
-
-		echo "docente";
-	}else {
-		echo "Error, usuario o contraseña incorrecta";
-	} 
-    }else{
-	$Cinicio = "SELECT clave FROM coordinadores where clave=".$usuario;
-    $ejecutadoC = $mysqli->query($Cinicio);
-    $clave_coordinadores=mysqli_fetch_array($ejecutadoC);
-    	$clave_C=$clave_coordinadores['clave'];
-
-    $Ccontra = "SELECT contrasena FROM coordinadores where clave=".$usuario;
-    $ejecutadoCContra = $mysqli->query($Ccontra);
-    $clave_coordinadoresContra=mysqli_fetch_array($ejecutadoCContra);
-
-    	$contraseña= $clave_coordinadoresContra['contrasena'];
-
-    	if( $usuario==$clave_C && $_POST["contraseña"]==$contraseña){
-		session_start();
-
-		$_SESSION["usuario"]["clave_C"]=$clave_C;
-
-		echo "coordinador";
-	}}}
-	else if (strlen($usuario)>=8) {
-
-	$Einicio = "SELECT matricula FROM estudiantes where matricula=".$usuario;
-    $ejecutadoE = $mysqli->query($Einicio);
-    $matriculaEstudiante=mysqli_fetch_array($ejecutadoE);
-
-    	$matricula= $matriculaEstudiante['matricula'];
-
-
-    $Econtra = "SELECT contrasena FROM estudiantes where matricula=".$usuario;
-    $ejecutadoEContra = $mysqli->query($Econtra);
-    $matriculaEstudianteContra=mysqli_fetch_array($ejecutadoEContra);
-
-    	$contraseña= $matriculaEstudianteContra['contrasena'];
-
-
-
-    	if ($usuario==$matricula && $_POST["contraseña"]==$contraseña) {
-		session_start();
-
-		$_SESSION["usuario"]["matricula"]=$matricula;
-		echo "estudiante";
-		}else {
-		echo "Error, usuario o contraseña incorrecta";
-	}
+foreach ($_POST as $campo => $valor) {
+    if ($campo !== 'nombre') {
+        $passwordIngresada = $valor;
+        break;
+    }
 }
+
+function buscarUsuarioPorRol($mysqli, $campo, $valor, $rol) {
+    $campo = $campo === "clave" ? "clave" : "matricula";
+    $sql = "SELECT u.matricula, u.clave, u.contrasena
+            FROM usuarios u
+            INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+            INNER JOIN roles r ON r.idRol = ur.idRol
+            WHERE u.$campo = ? AND r.nombreRol = ?
+            LIMIT 1";
+
+    $stmt = $mysqli->prepare($sql);
+    if (!$stmt) {
+        return null;
+    }
+
+    if ($campo === "clave") {
+        $valor = (int)$valor;
+        $stmt->bind_param("is", $valor, $rol);
+    } else {
+        $valor = (string)$valor;
+        $stmt->bind_param("ss", $valor, $rol);
+    }
+
+    $stmt->execute();
+    $resultado = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    return $resultado;
+}
+
+if ($usuario === '') {
+    header("Location:index.php");
+    exit;
+}
+
+if (strlen($usuario) == 5) {
+    $docente = buscarUsuarioPorRol($mysqli, "clave", $usuario, "Docente");
+
+    if ($docente && $passwordIngresada == $docente['contrasena']) {
+        session_start();
+        $_SESSION["usuario"]["clave_D"] = $docente['clave'];
+        echo "docente";
+        exit;
+    }
+
+    $coordinador = buscarUsuarioPorRol($mysqli, "clave", $usuario, "Coordinador");
+
+    if ($coordinador && $passwordIngresada == $coordinador['contrasena']) {
+        session_start();
+        $_SESSION["usuario"]["clave_C"] = $coordinador['clave'];
+        echo "coordinador";
+        exit;
+    }
+
+    echo "Error, usuario o contrasena incorrecta";
+    exit;
+}
+
+if (strlen($usuario) >= 8) {
+    $estudiante = buscarUsuarioPorRol($mysqli, "matricula", $usuario, "Estudiante");
+
+    if ($estudiante && $passwordIngresada == $estudiante['contrasena']) {
+        session_start();
+        $_SESSION["usuario"]["matricula"] = $estudiante['matricula'];
+        echo "estudiante";
+        exit;
+    }
+
+    echo "Error, usuario o contrasena incorrecta";
+    exit;
+}
+
+echo "Error, usuario o contrasena incorrecta";
 ?>

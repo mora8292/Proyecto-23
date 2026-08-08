@@ -161,10 +161,13 @@ if(isset($_POST['pdf']) || isset($_POST['excel']) || isset($_POST['reporte']) ||
     }
     
     // Consultar detalles de los estudiantes
-    $sql = "SELECT e.matricula, e.nombre, e.paterno, e.materno, e.sexo, e.carrera
-            FROM estudiantes e
-            INNER JOIN qreventos q ON e.matricula = q.matricula 
-            WHERE q.Id_Evento = ?";
+    $sql = "SELECT u.matricula, u.nombre, u.paterno, u.materno, u.sexo, u.carrera
+            FROM usuarios u
+            INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+            INNER JOIN roles r ON r.idRol = ur.idRol
+            INNER JOIN qreventos q ON u.matricula = q.matricula
+            WHERE q.Id_Evento = ?
+              AND r.nombreRol = 'Estudiante'";
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param("i", $campo);
     $stmt->execute();

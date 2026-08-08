@@ -17,10 +17,13 @@ if(isset($_SESSION["usuario"]["matricula"])){
     $matricula = $_SESSION["usuario"]["matricula"];
 
     $sql = "SELECT c.carrera
-            FROM estudiantes e
+            FROM usuarios u
+            INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+            INNER JOIN roles r ON r.idRol = ur.idRol
             INNER JOIN carreras c
-            ON e.carrera=c.id
-            WHERE e.matricula=?";
+            ON u.carrera=c.id
+            WHERE u.matricula=?
+              AND r.nombreRol = 'Estudiante'";
 
     $stmt = $mysqli->prepare($sql);
 

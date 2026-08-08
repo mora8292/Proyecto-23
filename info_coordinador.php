@@ -5,7 +5,12 @@ if (isset($_SESSION["usuario"]["clave_C"])!= ''){
 
 $d=$_SESSION["usuario"]["clave_C"];
     }
-    $consulta = "SELECT * FROM coordinadores WHERE clave= $d";
+    $consulta = "SELECT u.*
+                 FROM usuarios u
+                 INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+                 INNER JOIN roles r ON r.idRol = ur.idRol
+                 WHERE u.clave = $d
+                   AND r.nombreRol = 'Coordinador'";
 
     $ejecutarConsulta = $mysqli->query($consulta);
 

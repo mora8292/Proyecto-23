@@ -17,9 +17,12 @@ if (!isset($_SESSION["usuario"]["clave_C"])) {
 $clave = $_SESSION["usuario"]["clave_C"];
 
 /* Obtener la carrera del coordinador */
-$sqlCarrera = "SELECT carrera
-               FROM coordinadores
-               WHERE clave = ?";
+$sqlCarrera = "SELECT u.carrera
+               FROM usuarios u
+               INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+               INNER JOIN roles r ON r.idRol = ur.idRol
+               WHERE u.clave = ?
+                 AND r.nombreRol = 'Coordinador'";
 
 $stmt = $conn->prepare($sqlCarrera);
 $stmt->bind_param("i", $clave);

@@ -19,7 +19,12 @@ if(isset($_GET['matricula'])) {
     $matricula = $_GET['matricula']; 
     
     // Consulta preparada para obtener los datos del estudiante
-    $stmt = $conn->prepare("SELECT nombre, paterno, materno FROM estudiantes WHERE matricula = ?");
+    $stmt = $conn->prepare("SELECT u.nombre, u.paterno, u.materno
+                            FROM usuarios u
+                            INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+                            INNER JOIN roles r ON r.idRol = ur.idRol
+                            WHERE u.matricula = ?
+                              AND r.nombreRol = 'Estudiante'");
     $stmt->bind_param("s", $matricula);
     $stmt->execute();
     $result = $stmt->get_result();

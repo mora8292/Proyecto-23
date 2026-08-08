@@ -36,68 +36,41 @@ if ( $gClient->getAccessToken() ) { //SE HA LOGUEADO
 	}else{
 		//SI SE PUEDE LOGUEAR YA SOLO QUEDA HACER OTRAS VALIDACIONES PARA PODER INGRESAR
 		//SE PUEDE HACER CONSULTA A BASE DE DATOS Y VERIFICAR USUARIO
-		//busqueda estudiante
-    $Einicio = "SELECT matricula FROM estudiantes where matricula=".$p1;
-    $ejecutadoE = $mysqli->query($Einicio);
-    $matriculaEstudiante=mysqli_fetch_array($ejecutadoE);
-    $matricula= $matriculaEstudiante['matricula'];
+        $consultaUsuario = "SELECT u.matricula, u.clave, u.correo, r.nombreRol
+                            FROM usuarios u
+                            INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+                            INNER JOIN roles r ON r.idRol = ur.idRol
+                            WHERE (u.matricula = ? AND r.nombreRol = 'Estudiante')
+                               OR (u.correo = ? AND r.nombreRol IN ('Coordinador', 'Docente'))
+                            LIMIT 1";
 
-    if($p1==$matricula){
+        $stmt = $mysqli->prepare($consultaUsuario);
+        $stmt->bind_param("ss", $p1, $email);
+        $stmt->execute();
+        $usuarioEncontrado = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
 
-            session_start();
-            $_SESSION["usuario"]["matricula"]=$p1;
-            
-            header('Location:eventos_Estudiantes.php'); 
+        if ($usuarioEncontrado) {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
 
-        
-        }else {
+            if ($usuarioEncontrado['nombreRol'] == 'Estudiante') {
+                $_SESSION["usuario"]["matricula"] = $usuarioEncontrado['matricula'];
+                header('Location:eventos_Estudiantes.php');
+            } elseif ($usuarioEncontrado['nombreRol'] == 'Coordinador') {
+                $_SESSION["usuario"]["clave_C"] = $usuarioEncontrado['clave'];
+                header('Location:coordinador.php');
+            } elseif ($usuarioEncontrado['nombreRol'] == 'Docente') {
+                $_SESSION["usuario"]["clave_D"] = $usuarioEncontrado['clave'];
+                header('Location:eventos_Docentes.php');
+            }
+            exit;
+        } else {
             $errorNI="NO TE ENCUENTRAS EN LA BASE DE DATOS DE ITESA";
             $authUrl = $gClient->createAuthUrl();
             $output = '<a href="' . filter_var( $authUrl, FILTER_SANITIZE_URL ) . '"><img id="gmail" src="imagenes/gmai.png" alt=""/></a>';
         }
-        
-    $Cinicio = "SELECT count(correo) as val FROM coordinadores where correo=".$cade;
-    $ejecutadoC = $mysqli->query($Cinicio);
-    $clave_coordinadores=mysqli_fetch_array($ejecutadoC);
-    
-    if($clave_coordinadores['val']==1){
-    $Cinicio = "SELECT correo FROM coordinadores where correo=".$cade;
-    $ejecutadoC = $mysqli->query($Cinicio);
-    $clave_coordinadores=mysqli_fetch_array($ejecutadoC);
-    $claveC=$clave_coordinadores['correo'];
-    if ($cade==$claveC) {
-            session_start();
-            $_SESSION["usuario"]["claveC"]=$cade;
-            
-           header('Location:coordinador.php'); 
-        }else{
-            header('Location:index.php'); 
-        }
-    }else{
-        $Dinicio = "SELECT count(correo) as val FROM docentes where correo=".$cade;
-    $ejecutadoD = $mysqli->query($Dinicio);
-    $clave_docente=mysqli_fetch_array($ejecutadoD);
-
-    if($clave_docente['val']==1){
-    $Dinicio = "SELECT correo FROM docentes where correo=".$cade;
-    $ejecutadoD = $mysqli->query($Dinicio);
-    $clave_docente=mysqli_fetch_array($ejecutadoD);
-    $claveD=$clave_docente['correo'];
-    if ($cade==$claveD) {
-            session_start();
-            $_SESSION["usuario"]["claveD"]=$cade;
-            
-           header('Location:eventos_Docentes.php'); 
-        }else{
-            header('Location:index.php'); 
-        }
-    }else{
-
-
-    }
-
-
-    }
         
 	}
 	//echo( $email );
