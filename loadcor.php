@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'auth.php';
 require 'config.php';
 
 $conn->set_charset("utf8mb4");
@@ -9,12 +10,44 @@ $verTodos = isset($_POST['verTodos']) ? intval($_POST['verTodos']) : 0;
 $html = "";
 
 /* Verificar sesión */
-if (!isset($_SESSION["usuario"]["clave_C"])) {
+if (!usuarioPuedeEntrar(["Coordinador"])) {
     echo json_encode('<tr><td colspan="4" class="text-center">Sesión no válida</td></tr>');
     exit;
 }
 
-$clave = $_SESSION["usuario"]["clave_C"];
+if (usuarioEsAdministrador()) {
+    $resultado = $conn->query("SELECT Id_Evento,
+                                      Nombre_Evento,
+                                      Fecha_Evento,
+                                      Lugar_Evento
+                               FROM eventos
+                               ORDER BY Fecha_Evento DESC");
+
+    if ($resultado && $resultado->num_rows > 0) {
+        while ($row = $resultado->fetch_assoc()) {
+            $html .= '<tr data-id="'.$row['Id_Evento'].'">';
+            $html .= '<td>'.htmlspecialchars($row['Nombre_Evento']).'</td>';
+            $html .= '<td>'.htmlspecialchars($row['Fecha_Evento']).'</td>';
+            $html .= '<td>'.htmlspecialchars($row['Lugar_Evento']).'</td>';
+            $html .= '<td>';
+            $html .= '<button class="btn btn-success btn-modificar btn-action">';
+            $html .= '<img src="imagenes/modifica.png" style="height:20px;width:20px;"> Modificar';
+            $html .= '</button> ';
+            $html .= '<button class="btn btn-danger btn-eliminar btn-action">';
+            $html .= '<img src="imagenes/borrar.png" style="height:20px;width:20px;"> Eliminar';
+            $html .= '</button>';
+            $html .= '</td>';
+            $html .= '</tr>';
+        }
+    } else {
+        $html = '<tr><td colspan="4" class="text-center">No hay eventos registrados</td></tr>';
+    }
+
+    echo json_encode($html, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$clave = $_SESSION["usuario"]["clave_C"] ?? 0;
 
 /* Obtener la carrera del coordinador */
 $sqlCarrera = "SELECT u.carrera
@@ -63,7 +96,7 @@ $columna = $datosNombre["carrera"];
 
 /* Consulta de eventos */
 
-if ($verTodos == 1) {
+if ($verTodos == 1 || usuarioEsAdministrador()) {
 
     $sql = "SELECT Id_Evento,
                    Nombre_Evento,

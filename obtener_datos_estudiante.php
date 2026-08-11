@@ -24,7 +24,8 @@ if(isset($_GET['matricula'])) {
                             INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
                             INNER JOIN roles r ON r.idRol = ur.idRol
                             WHERE u.matricula = ?
-                              AND r.nombreRol = 'Estudiante'");
+                              AND r.nombreRol = 'Estudiante'
+                              AND u.activo = 1");
     $stmt->bind_param("s", $matricula);
     $stmt->execute();
     $result = $stmt->get_result();

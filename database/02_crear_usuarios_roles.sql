@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `matricula` varchar(9) COLLATE utf8_unicode_ci DEFAULT NULL,
   `clave` int(11) DEFAULT NULL,
   `semestre` tinyint(4) DEFAULT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `matricula` (`matricula`),
   UNIQUE KEY `clave` (`clave`),
@@ -33,18 +34,18 @@ INSERT IGNORE INTO `roles` (`idRol`, `nombreRol`) VALUES
 (4, 'Estudiante');
 
 INSERT IGNORE INTO `usuarios`
-(`nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, `matricula`, `clave`, `semestre`)
-SELECT `nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, NULL, `clave`, NULL
+(`nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, `matricula`, `clave`, `semestre`, `activo`)
+SELECT `nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, NULL, `clave`, NULL, 1
 FROM `coordinadores`;
 
 INSERT IGNORE INTO `usuarios`
-(`nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, `matricula`, `clave`, `semestre`)
-SELECT `nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, NULL, `clave`, NULL
+(`nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, `matricula`, `clave`, `semestre`, `activo`)
+SELECT `nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, NULL, `clave`, NULL, 1
 FROM `docentes`;
 
 INSERT IGNORE INTO `usuarios`
-(`nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, `matricula`, `clave`, `semestre`)
-SELECT `nombre`, `paterno`, `materno`, `sexo`, NULL, `contrasena`, `carrera`, `matricula`, NULL, `semestre`
+(`nombre`, `paterno`, `materno`, `sexo`, `correo`, `contrasena`, `carrera`, `matricula`, `clave`, `semestre`, `activo`)
+SELECT `nombre`, `paterno`, `materno`, `sexo`, NULL, `contrasena`, `carrera`, `matricula`, NULL, `semestre`, 1
 FROM `estudiantes`;
 
 DROP VIEW IF EXISTS `usuarios_roles`;

@@ -1,6 +1,7 @@
 <?php
-  session_start();
-  if (isset($_SESSION["usuario"]["clave_C"])!= ''){
+  require_once "auth.php";
+  iniciarSesionSiHaceFalta();
+  if (usuarioPuedeEntrar(["Coordinador"])){
 ?>
 <?php 
 header('Content-Type: text/html; charset=UTF-8');
@@ -111,7 +112,22 @@ header('Content-Type: text/html; charset=UTF-8');
    			</div>
 
    		</div>
-   		
+
+        <?php if (usuarioEsAdministrador()) { ?>
+        <div class="row">
+          <div class="col-lg-4 col-sm-4">
+          </div>
+          <div class="col-lg-4 col-sm-4 textlogin">
+            <button class="btn btn_coordinador btn-secondary me-md-2 btn-g" type="button" onclick="adminAlumnos()">
+              <img class=" img-fluid" src="imagenes/excel.png" width="100px" height="40px">
+              <p><b>Altas y Bajas de Alumnos</b></p>
+            </button>
+          </div>
+          <div class="col-lg-4 col-sm-4">
+          </div>
+        </div>
+        <?php } ?>
+
    	</div>
     <div class="row">
             <div class="col-lg-12 col-sm-12" style="height: 40px;">                 
@@ -155,6 +171,9 @@ header('Content-Type: text/html; charset=UTF-8');
     }
     function reportes(){
       window.location = "reportes.php";
+    }
+    function adminAlumnos(){
+      window.location = "admin_alumnos_excel.php";
     }
 </script>
 

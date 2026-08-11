@@ -1,7 +1,8 @@
 <?php
-    session_start();
-    if (($_SESSION["usuario"]["clave_D"])!= ''){
-        $matricula=$_SESSION["usuario"]["clave_D"];
+    require_once "auth.php";
+    iniciarSesionSiHaceFalta();
+    if (usuarioPuedeEntrar(["Docente"])){
+        $matricula=$_SESSION["usuario"]["clave_D"] ?? $_SESSION["usuario"]["clave_C"] ?? 0;
 ?>
 
 

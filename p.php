@@ -1,6 +1,7 @@
 <?php
-session_start();
-if (isset($_SESSION["usuario"]["clave_C"]) != '' || isset($_SESSION["usuario"]["clave_D"]) != '') {
+require_once "auth.php";
+iniciarSesionSiHaceFalta();
+if (usuarioPuedeEntrar(["Coordinador", "Docente"])) {
 ?>
   <!DOCTYPE html>
   <html lang="es">
@@ -366,6 +367,18 @@ if (isset($_SESSION["usuario"]["clave_C"]) != '' || isset($_SESSION["usuario"]["
 
                           alertify.success(
                             "Alumno registrado"
+                          );
+
+                        } else if (resultado == "inactivo") {
+
+                          alertify.error(
+                            "Alumno inactivo"
+                          );
+
+                        } else if (resultado == "duplicado") {
+
+                          alertify.error(
+                            "Registro duplicado"
                           );
 
                         } else {

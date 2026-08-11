@@ -13,6 +13,7 @@ $consulta = "SELECT u.matricula,
              INNER JOIN roles r ON r.idRol = ur.idRol
              LEFT JOIN carreras c ON c.id = u.carrera
              WHERE r.nombreRol = 'Estudiante'
+               AND u.activo = 1
              ORDER BY u.paterno, u.materno, u.nombre";
 
 $resultado = $mysqli->query($consulta) or die("ERROR al acceder a la tabla de usuarios: " . $mysqli->error);

@@ -12,7 +12,8 @@ $d=$_SESSION["usuario"]["matricula"];
                  INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
                  INNER JOIN roles r ON r.idRol = ur.idRol
                  WHERE u.matricula = $d
-                   AND r.nombreRol = 'Estudiante'";
+                   AND r.nombreRol = 'Estudiante'
+                   AND u.activo = 1";
 
     $ejecutarConsulta = $mysqli->query($consulta);
     

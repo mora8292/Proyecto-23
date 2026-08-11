@@ -1,5 +1,6 @@
 <?php
 require("conexion.php");
+require_once("auth.php");
 //Include EL CONECTOR A GMAIL https://console.developers.google.com
 include_once 'gpConfig.php';
 //VERIFICANDO SI YA SE LOGUEO
@@ -36,12 +37,17 @@ if ( $gClient->getAccessToken() ) { //SE HA LOGUEADO
 	}else{
 		//SI SE PUEDE LOGUEAR YA SOLO QUEDA HACER OTRAS VALIDACIONES PARA PODER INGRESAR
 		//SE PUEDE HACER CONSULTA A BASE DE DATOS Y VERIFICAR USUARIO
-        $consultaUsuario = "SELECT u.matricula, u.clave, u.correo, r.nombreRol
+        $consultaUsuario = "SELECT u.id_usuario, u.matricula, u.clave, u.correo,
+                                   GROUP_CONCAT(r.nombreRol ORDER BY r.idRol) AS roles
                             FROM usuarios u
                             INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
                             INNER JOIN roles r ON r.idRol = ur.idRol
-                            WHERE (u.matricula = ? AND r.nombreRol = 'Estudiante')
-                               OR (u.correo = ? AND r.nombreRol IN ('Coordinador', 'Docente'))
+                            WHERE u.activo = 1
+                              AND (
+                                  u.matricula = ?
+                                  OR u.correo = ?
+                              )
+                            GROUP BY u.id_usuario, u.matricula, u.clave, u.correo
                             LIMIT 1";
 
         $stmt = $mysqli->prepare($consultaUsuario);
@@ -51,19 +57,16 @@ if ( $gClient->getAccessToken() ) { //SE HA LOGUEADO
         $stmt->close();
 
         if ($usuarioEncontrado) {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
+            registrarSesionUsuario($usuarioEncontrado);
 
-            if ($usuarioEncontrado['nombreRol'] == 'Estudiante') {
-                $_SESSION["usuario"]["matricula"] = $usuarioEncontrado['matricula'];
-                header('Location:eventos_Estudiantes.php');
-            } elseif ($usuarioEncontrado['nombreRol'] == 'Coordinador') {
-                $_SESSION["usuario"]["clave_C"] = $usuarioEncontrado['clave'];
+            if (usuarioEsAdministrador() || usuarioTieneRol('Coordinador')) {
                 header('Location:coordinador.php');
-            } elseif ($usuarioEncontrado['nombreRol'] == 'Docente') {
-                $_SESSION["usuario"]["clave_D"] = $usuarioEncontrado['clave'];
+            } elseif (usuarioTieneRol('Docente')) {
                 header('Location:eventos_Docentes.php');
+            } elseif (usuarioTieneRol('Estudiante')) {
+                header('Location:eventos_Estudiantes.php');
+            } else {
+                header('Location:index.php');
             }
             exit;
         } else {

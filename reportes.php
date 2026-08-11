@@ -1,6 +1,7 @@
 <?php
-session_start();
-if (($_SESSION["usuario"]["clave_C"]) != '') {
+require_once "auth.php";
+iniciarSesionSiHaceFalta();
+if (usuarioPuedeEntrar(["Coordinador"])) {
 ?>
 
   <html>

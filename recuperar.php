@@ -23,7 +23,8 @@ if(isset($_SESSION["usuario"]["matricula"])){
             INNER JOIN carreras c
             ON u.carrera=c.id
             WHERE u.matricula=?
-              AND r.nombreRol = 'Estudiante'";
+              AND r.nombreRol = 'Estudiante'
+              AND u.activo = 1";
 
     $stmt = $mysqli->prepare($sql);
 

@@ -167,7 +167,8 @@ if(isset($_POST['pdf']) || isset($_POST['excel']) || isset($_POST['reporte']) ||
             INNER JOIN roles r ON r.idRol = ur.idRol
             INNER JOIN qreventos q ON u.matricula = q.matricula
             WHERE q.Id_Evento = ?
-              AND r.nombreRol = 'Estudiante'";
+              AND r.nombreRol = 'Estudiante'
+              AND u.activo = 1";
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param("i", $campo);
     $stmt->execute();

@@ -9,6 +9,28 @@ if (!isset($_POST['mat']) || !isset($_POST['ev'])) {
 $matricula = trim($_POST['mat']);
 $evento = trim($_POST['ev']);
 
+// Verificar que el alumno exista y este activo
+$sql = "SELECT COUNT(*) AS total
+        FROM usuarios u
+        INNER JOIN usuarios_roles ur ON ur.idUsuario = u.id_usuario
+        INNER JOIN roles r ON r.idRol = ur.idRol
+        WHERE u.matricula = ?
+          AND r.nombreRol = 'Estudiante'
+          AND u.activo = 1";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("s", $matricula);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$stmt->close();
+
+if ($row['total'] == 0) {
+    echo "inactivo";
+    exit;
+}
+
 // Verificar si ya existe el registro
 $sql = "SELECT COUNT(*) AS total
         FROM qreventos
