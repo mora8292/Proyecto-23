@@ -115,7 +115,7 @@ header('Content-Type: text/html; charset=UTF-8');
 
         <?php if (usuarioEsAdministrador()) { ?>
         <div class="row">
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-1 col-sm-1">
           </div>
           <div class="col-lg-4 col-sm-4 textlogin">
             <button class="btn btn_coordinador btn-secondary me-md-2 btn-g" type="button" onclick="adminAlumnos()">
@@ -123,7 +123,15 @@ header('Content-Type: text/html; charset=UTF-8');
               <p><b>Altas y Bajas de Alumnos</b></p>
             </button>
           </div>
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-2 col-sm-2">
+          </div>
+          <div class="col-lg-4 col-sm-4 textlogin">
+            <button class="btn btn_coordinador btn-secondary me-md-2 btn-g" type="button" onclick="editarRoles()">
+              <img class="img-fluid" src="imagenes/modifica.png" width="100px" height="40px">
+              <p><b>Editar roles de usuarios</b></p>
+            </button>
+          </div>
+          <div class="col-lg-1 col-sm-1">
           </div>
         </div>
         <?php } ?>
@@ -174,6 +182,9 @@ header('Content-Type: text/html; charset=UTF-8');
     }
     function adminAlumnos(){
       window.location = "admin_alumnos_excel.php";
+    }
+    function editarRoles(){
+      window.location = "editar_roles.php";
     }
 </script>
 
