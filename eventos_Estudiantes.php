@@ -155,6 +155,20 @@ if (usuarioPuedeEntrar(["Estudiante"])) {
                             </center>
                         </div>
                     </div>
+                    <?php if (usuarioTieneRol("Docente")) { ?>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 textlogin" style="height: 30px;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 textlogin">
+                                <button class="btn_eventos_D btn-primary me-md-2" onclick="scan()" type="button">
+                                    <img class="img-fluid" height="25px" src="imagenes/Scaner.png" width="20px" style="text-align: center;">
+                                    Scanner
+                                </button>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -202,6 +216,10 @@ if (usuarioPuedeEntrar(["Estudiante"])) {
     <script src="js/qr.js">
     </script>
     <script type="text/javascript">
+        function scan() {
+            window.location = "p.php";
+        }
+
         function cargarEventos() {
 
             $.ajax({
